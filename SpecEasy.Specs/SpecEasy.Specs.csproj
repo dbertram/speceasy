@@ -128,6 +128,7 @@
     <Compile Include="DuplicateDescriptions\DuplicateDescriptionsTests.cs" />
     <Compile Include="GenericSpec\PartialMockSpec.cs" />
     <Compile Include="GenericSpec\PartialMockWithConstructorParamsSpec.cs" />
+    <Compile Include="GenericSpec\ManualSUTConstructionSpec.cs" />
     <Compile Include="GivenCount\GivenCountSpecs.cs" />
     <Compile Include="ExternalSpec\MagicNumberAdderSpec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

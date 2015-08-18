@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using TinyIoC;
@@ -9,6 +10,9 @@ namespace SpecEasy
     public class Spec<TUnit> : Spec
     {
         internal TinyIoCContainer MockingContainer;
+        private Func<TUnit> sutBuilderFunc;
+        private TestSetup<TUnit> testSetup;  
+        private TUnit constructedSUTInstance;
 
         protected T Mock<T>() where T : class
         {
@@ -48,6 +52,16 @@ namespace SpecEasy
             return type.IsInterface || type.IsAbstract ? MockRepository.GenerateMock(type, new Type[0]) : null;
         }
 
+        private TUnit GetSUTInstance()
+        {
+            if (testSetup == null)
+            {
+                return Get<TUnit>();
+            }
+
+            return testSetup.BuildSUT();
+        }
+
         protected void Set<T>(T item)
         {
             RequireMockingContainer();
@@ -59,6 +73,20 @@ namespace SpecEasy
             var mock = Get<T>();
             mock.Raise(eventSubscription, args);
         }
+
+        protected new ITestSetup<TUnit> When(string description, Action task)
+        {
+            testSetup = new TestSetup<TUnit>(Get<TUnit>);
+            base.When(description, task);
+            return testSetup;
+        }
+
+        protected new ITestSetup<TUnit> When(string description, Func<Task> func)
+        {
+            testSetup = new TestSetup<TUnit>(Get<TUnit>);
+            base.When(description, func);
+            return testSetup;
+        } 
 
         protected void AssertWasCalled<T>(Action<T> action)
         {
@@ -111,7 +139,7 @@ namespace SpecEasy
 
         protected TUnit SUT
         {
-            get { return Get<TUnit>(); }
+            get { return GetSUTInstance(); }
             set { Set(value); }
         }
     }

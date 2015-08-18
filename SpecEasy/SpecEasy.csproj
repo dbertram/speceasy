@@ -96,6 +96,8 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="ITestSetup.cs" />
+    <Compile Include="TestSetup.cs" />
     <Compile Include="DuplicateDescriptionException.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="VerifyContext.cs" />
