@@ -33,10 +33,62 @@ namespace SpecEasy.Specs.FizzBuzz
             Given("an input of a multiple of 3 and 5", () => input = 30).Verify(() =>
                 Then("it should return fizzbuzz", () => Assert.That(result, Is.EqualTo("fizzbuzz"))));
         }
+
+        public void CanThrowPassingSpecs()
+        {
+            var shouldThrow = false;
+
+            When("calling a method that can throw", () => SUT.CanThrow(shouldThrow));
+
+            Given("the method does not throw and we do not assert that it throws", () => shouldThrow = false).Verify(() =>
+                Then("IFoo.Bar is called", () => AssertWasCalled<IFoo>(foo => foo.Bar())));
+
+            Given("the method does throw and we assert that it throws", () => shouldThrow = true).Verify(() =>
+            {
+                Then("Invalid operation is thrown and IFoo.Bar is called", () =>
+                {
+                    AssertWasThrown<System.InvalidOperationException>();
+                    AssertWasCalled<IFoo>(foo => foo.Bar());
+                });
+
+                Then("Invalid operation is thrown and IFoo.Bar is called 2", () =>
+                    AssertWasThrown<System.InvalidOperationException>(exception => AssertWasCalled<IFoo>(foo => foo.Bar())));
+
+                Then<System.InvalidOperationException>("IFoo.Bar is called", () => AssertWasCalled<IFoo>(foo => foo.Bar()));
+            });
+        }
+
+        //public void CanThrowFailingSpecs()
+        //{
+        //    var shouldThrow = false;
+
+        //    When("calling a method that can throw", () => SUT.CanThrow(shouldThrow));
+
+        //    Given("the method does not throw and we assert that it throws", () => shouldThrow = false).Verify(() =>
+        //    {
+        //        Then("Invalid operation is thrown and IFoo.Bar is called", () =>
+        //        {
+        //            AssertWasThrown<System.InvalidOperationException>();
+        //            AssertWasCalled<IFoo>(foo => foo.Bar());
+        //        });
+
+        //        Then<System.InvalidOperationException>("IFoo.Bar is called", () => AssertWasCalled<IFoo>(foo => foo.Bar()));
+        //    });
+
+        //    //Given("the method does throw and we do not assert that it throws", () => shouldThrow = true).Verify(() =>
+        //    //    Then("IFoo.Bar is called", () => AssertWasCalled<IFoo>(foo => foo.Bar())));
+        //}
     }
 
     public class FizzBuzzImpl
     {
+        private readonly IFoo foo;
+
+        public FizzBuzzImpl(IFoo foo)
+        {
+            this.foo = foo;
+        }
+
         public string Run(int input)
         {
             string retVal = null;
@@ -53,5 +105,20 @@ namespace SpecEasy.Specs.FizzBuzz
 
             return retVal ?? input.ToString(CultureInfo.InvariantCulture);
         }
+
+        public void CanThrow(bool shouldThrow)
+        {
+            foo.Bar();
+
+            if (shouldThrow)
+            {
+                throw new System.InvalidOperationException();
+            }
+        }
+    }
+
+    public interface IFoo
+    {
+        bool Bar();
     }
 }

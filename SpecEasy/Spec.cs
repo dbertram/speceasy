@@ -237,6 +237,19 @@ namespace SpecEasy
             return new VerifyContext(Then);
         }
 
+        protected IVerifyContext Then<TException>(string description, Action specification) where TException : Exception
+        {
+            return Then<TException>(description, WrapAction(specification));
+        }
+
+        protected IVerifyContext Then<TException>(string description, Func<Task> specification) where TException : Exception
+        {
+            return Then(description, async () => {
+                AssertWasThrown<TException>(); // todo: capture stack trace that points to caller in Spec?
+                await specification();
+            });
+        }
+
         private static Func<Task> ThrowDuplicateDescriptionException(string typeOfDuplicate, string description)
         {
             var stackTrace = Environment.StackTrace;
