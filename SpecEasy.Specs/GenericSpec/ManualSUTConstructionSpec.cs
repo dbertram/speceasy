@@ -4,17 +4,16 @@ namespace SpecEasy.Specs.GenericSpec
 {
     public class ManualSUTConstructionSpec : Spec<Mockable>
     {
+        private int constructSutCallCount;
+
         public void Run()
         {
-            var ctorFuncCallCount = 0;
+            When("testing a class with constructor dependencies that is being constructed manually", () => { });
 
-            When("testing a class with constructor dependencies that is being constructed manually", () => { }).BuildSUTUsing(() =>
-            {
-                ctorFuncCallCount++;
-                return new Mockable(new Dependency1Impl("manually built"));
-            });
+            Given("the SUT is never accessed").Verify(() =>
+                Then("the method to construct the SUT should never be called", () => constructSutCallCount.ShouldEqual(0)));
 
-            Given("a manually constructed dependency").Verify(() =>
+            Given("the SUT is accessed", () => EnsureSUT()).Verify(() =>
             {
                 Then("the constructed depenency is used to construct the SUT", () =>
                 {
@@ -22,15 +21,21 @@ namespace SpecEasy.Specs.GenericSpec
                     SUT.Dep1.Value.ShouldEqual("manually built");
                 });
 
-                Then("the func provided to construct the SUT is called exactly once", () => ctorFuncCallCount.ShouldEqual(1));
-
-                Then("it constructs the SUT exactly once", () =>
+                Then("any call to get the SUT refers to the same instance", () =>
                 {
                     var sut1 = SUT;
                     var sut2 = SUT;
                     sut1.ShouldBeSameAs(sut2);
                 });
+
+                Then("the func provided to construct the SUT is called exactly once", () => constructSutCallCount.ShouldEqual(1));
             });
-        }   
+        }
+
+        protected override Mockable ConstructSUT()
+        {
+            constructSutCallCount++;
+            return new Mockable(new Dependency1Impl("manually built"));
+        }
     }
 }
