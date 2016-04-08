@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using TinyIoC;
@@ -9,9 +8,9 @@ namespace SpecEasy
 {
     public class Spec<TUnit> : Spec
     {
-        internal TinyIoCContainer MockingContainer;
-        private TUnit constructedSUTInstance;
+        private TinyIoCContainer MockingContainer;
         private bool alreadyConstructedSUT;
+        private TUnit constructedSUTInstance;
 
         protected T Mock<T>() where T : class
         {
@@ -23,18 +22,6 @@ namespace SpecEasy
             if (MockingContainer == null)
                 throw new InvalidOperationException(
                     "This method cannot be called before the test context is initialized.");
-        }
-
-        private TUnit GetSUTInstance()
-        {
-            if (!alreadyConstructedSUT)
-            {
-                constructedSUTInstance = ConstructSUT();
-                alreadyConstructedSUT = true;
-                Set(constructedSUTInstance);
-            }
-
-            return constructedSUTInstance;
         }
 
         private ResolveOptions resolveOptions;
@@ -63,15 +50,33 @@ namespace SpecEasy
             return type.IsInterface || type.IsAbstract ? MockRepository.GenerateMock(type, new Type[0]) : null;
         }
 
-        protected void Set<T>(T item)
+        private TUnit GetSUTInstance()
         {
-            RequireMockingContainer();
-            MockingContainer.Register(typeof(T), item);
+            if (!alreadyConstructedSUT)
+            {
+                constructedSUTInstance = ConstructSUT();
+
+                if (constructedSUTInstance == null)
+                {
+                    throw new InvalidOperationException("Failed to construct SUT: ConstructSUT returned null");
+                }
+
+                Set(constructedSUTInstance);
+                alreadyConstructedSUT = true;
+            }
+
+            return constructedSUTInstance;
         }
 
         protected virtual TUnit ConstructSUT()
         {
             return Get<TUnit>();
+        }
+
+        protected void Set<T>(T item)
+        {
+            RequireMockingContainer();
+            MockingContainer.Register(typeof(T), item);
         }
 
         protected void Raise<T>(Action<T> eventSubscription, params object[] args) where T : class
@@ -127,7 +132,7 @@ namespace SpecEasy
 
         protected void EnsureSUT()
         {
-            GetSUTInstance();
+            SUT = SUT;
         }
 
         protected TUnit SUT
