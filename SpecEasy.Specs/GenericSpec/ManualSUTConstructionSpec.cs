@@ -1,41 +1,71 @@
+using Rhino.Mocks;
 using Should;
+using Should.Core.Assertions;
 
 namespace SpecEasy.Specs.GenericSpec
 {
     public class ManualSUTConstructionSpec : Spec<Mockable>
     {
-        private int constructSutCallCount;
+        private const string ManualConstructedDependencyValue = "Manually Constructed";
+        private const string MockedDependencyValue = "Mocked";
 
-        public void Run()
+        private int constructSUTCallCount;
+        private bool shouldManauallyConstructSUT;
+
+        public void ManuallyConstructSUT()
         {
-            When("testing a class with constructor dependencies that is being constructed manually", () => { });
+            When("testing a class that might need to be constructed manually", () => { });
 
             Given("the SUT is never accessed").Verify(() =>
-                Then("the method to construct the SUT should never be called", () => constructSutCallCount.ShouldEqual(0)));
+                Then("the method to construct the SUT should never be called", () => constructSUTCallCount.ShouldEqual(0)));
 
-            Given("the SUT is accessed", () => EnsureSUT()).Verify(() =>
+            Given("the SUT needs to be constructed manually", () => shouldManauallyConstructSUT = true).Verify(() =>
             {
-                Then("the constructed depenency is used to construct the SUT", () =>
+                Given("the SUT is accessed", () => EnsureSUT()).Verify(() =>
                 {
-                    SUT.Dep1.ShouldBeType<Dependency1Impl>();
-                    SUT.Dep1.Value.ShouldEqual("manually built");
-                });
+                    Then("the dependency should be the one manually constructed", () => SUT.Dep1.Value.ShouldEqual(ManualConstructedDependencyValue));
 
-                Then("any call to get the SUT refers to the same instance", () =>
-                {
-                    var sut1 = SUT;
-                    var sut2 = SUT;
-                    sut1.ShouldBeSameAs(sut2);
-                });
+                    Then("any call to get the SUT refers to the same instance", () =>
+                    {
+                        var instanceA = SUT;
+                        var instanceB = SUT;
+                        instanceA.ShouldBeSameAs(instanceB);
+                    });
 
-                Then("the func provided to construct the SUT is called exactly once", () => constructSutCallCount.ShouldEqual(1));
+                    Then("the method to construct the SUT is called exactly once", () => constructSUTCallCount.ShouldEqual(1));
+
+                    Then("any SUT instance created using Get<T> should refer to the same instance as SUT", () =>
+                    {
+                        var instanceA = SUT;
+                        var instanceB = Get<Mockable>();
+                        var instanceC = Get<Mockable>();
+                        instanceA.ShouldBeSameAs(instanceB);
+                        instanceB.ShouldBeSameAs(instanceC);
+                    });
+                });
             });
+
+            
+
+            
         }
 
         protected override Mockable ConstructSUT()
         {
-            constructSutCallCount++;
-            return new Mockable(new Dependency1Impl("manually built"));
+            constructSUTCallCount++;
+
+            if (!shouldManauallyConstructSUT)
+            {
+                return base.ConstructSUT();
+            }
+
+            return new Mockable(new Dependency1Impl(ManualConstructedDependencyValue));
+        }
+
+        protected override void BeforeEachExample()
+        {
+            base.BeforeEachExample();
+            constructSUTCallCount = 0;
         }
     }
 }

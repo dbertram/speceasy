@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using TinyIoC;
@@ -10,6 +11,7 @@ namespace SpecEasy
     {
         internal TinyIoCContainer MockingContainer;
         private TUnit constructedSUTInstance;
+        private bool alreadyConstructedSUT;
 
         protected T Mock<T>() where T : class
         {
@@ -25,12 +27,14 @@ namespace SpecEasy
 
         private TUnit GetSUTInstance()
         {
-            if (constructedSUTInstance != null)
+            if (!alreadyConstructedSUT)
             {
-                return constructedSUTInstance;
+                constructedSUTInstance = ConstructSUT();
+                alreadyConstructedSUT = true;
+                Set(constructedSUTInstance);
             }
 
-            return constructedSUTInstance = ConstructSUT();
+            return constructedSUTInstance;
         }
 
         private ResolveOptions resolveOptions;
@@ -103,6 +107,7 @@ namespace SpecEasy
         protected override void BeforeEachExample()
         {
             base.BeforeEachExample();
+            alreadyConstructedSUT = false;
             MockingContainer = new TinyIoCContainer();
 
             if (typeof (TUnit).IsAbstract)
