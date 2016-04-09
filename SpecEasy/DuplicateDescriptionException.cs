@@ -1,23 +1,10 @@
-using System;
-
 namespace SpecEasy
 {
-    public class DuplicateDescriptionException : InvalidOperationException
+    public class DuplicateDescriptionException : TestCaseCreationException
     {
-        private readonly string stackTrace;
-
         internal DuplicateDescriptionException(string typeOfDuplicate, string description, string stackTrace)
-            : base(string.Format("Failed to generate test cases; {0} description '{1}' has already been used", typeOfDuplicate, description))
+            : base(string.Format("{0} description '{1}' has already been used", typeOfDuplicate, description), stackTrace)
         {
-            this.stackTrace = stackTrace;
-        }
-
-        public override string StackTrace
-        {
-            get
-            {
-                return stackTrace;
-            }
         }
     }
 }

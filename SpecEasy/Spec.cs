@@ -44,7 +44,17 @@ namespace SpecEasy
                 contexts = new Dictionary<string, Context>();
                 when = cachedWhen;
 
-                givenContext.EnterContext();
+                try
+                {
+                    givenContext.EnterContext();
+                }
+                catch (Exception exception)
+                {
+                    //givenContext = new Context(() => { throw exception; }, () => Then("failboats", () => Assert.Pass()));
+                    //contexts[namedContext.Key] = givenContext;
+                    //continue;
+                    givenContext.setupAction = () => { throw exception; };
+                }
 
                 if (depth > 0)
                     contextList.Add(namedContext);

@@ -15,11 +15,10 @@ namespace SpecEasy
             return MockRepository.GenerateMock<T>();
         }
 
-        private void RequireMockingContainer()
+        private void RequireMockingContainer(string caller)
         {
             if (MockingContainer == null)
-                throw new InvalidOperationException(
-                    "This method cannot be called before the test context is initialized.");
+                throw new MockingContainerAccessException(caller, Environment.StackTrace);
         }
 
         private ResolveOptions resolveOptions;
@@ -37,7 +36,7 @@ namespace SpecEasy
 
         protected T Get<T>()
         {
-            RequireMockingContainer();
+            RequireMockingContainer("get");
             return (T)MockingContainer.Resolve(typeof(T), ResolveOptions);
             //Preferred, but only allows reference types: return MockingContainer.Resolve<T>();
         }
@@ -50,7 +49,7 @@ namespace SpecEasy
 
         protected void Set<T>(T item)
         {
-            RequireMockingContainer();
+            RequireMockingContainer("set");
             MockingContainer.Register(typeof(T), item);
         }
 

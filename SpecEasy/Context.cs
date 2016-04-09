@@ -10,7 +10,7 @@ namespace SpecEasy
 
     internal class Context : IContext
     {
-        private readonly Func<Task> setupAction = async delegate { };
+        public Func<Task> setupAction = async delegate { };
         private Action enterAction = delegate { };
 
         public Context()
@@ -19,7 +19,7 @@ namespace SpecEasy
 
         public Context(Func<Task> setup)
         {
-            setupAction = setup;            
+            setupAction = setup;
         }
 
         public Context(Func<Task> setup, Action addSpecs)
@@ -33,7 +33,7 @@ namespace SpecEasy
             var cachedEnterAction = enterAction;
             enterAction = () => { cachedEnterAction(); addSpecs(); };
         }
-        
+
         public void EnterContext()
         {
             enterAction();

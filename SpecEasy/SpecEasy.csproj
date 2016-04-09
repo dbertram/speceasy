@@ -94,6 +94,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestCaseCreationException.cs" />
+    <Compile Include="MockingContainerAccessException.cs" />
     <Compile Include="Action.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DuplicateDescriptionException.cs" />
