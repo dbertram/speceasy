@@ -281,6 +281,7 @@ namespace SpecEasy
         {
             if (!hasCalledBefore)
             {
+                InternalBeforeEachExample();
                 BeforeEachExample();
                 hasCalledBefore = true;
             }
@@ -295,7 +296,10 @@ namespace SpecEasy
             }
         }
 
+        internal virtual void InternalBeforeEachExample() { }
+
         protected virtual void BeforeEachExample() { }
+
         protected virtual void AfterEachExample() { }
 
         private async Task InitializeContext(IEnumerable<KeyValuePair<string, Context>> contextList)

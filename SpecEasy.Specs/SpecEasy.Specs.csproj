@@ -126,6 +126,7 @@
     <Compile Include="FizzBuzz\FizzBuzzSpecs.cs" />
     <Compile Include="GenericSpec\AutoMockSpec.cs" />
     <Compile Include="DuplicateDescriptions\DuplicateDescriptionsTests.cs" />
+    <Compile Include="GenericSpec\BeforeEachExampleThatDoesNotCallBaseSpec.cs" />
     <Compile Include="GenericSpec\PartialMockSpec.cs" />
     <Compile Include="GenericSpec\PartialMockWithConstructorParamsSpec.cs" />
     <Compile Include="GivenCount\GivenCountSpecs.cs" />
