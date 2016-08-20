@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace SpecEasy
 {
     [TestFixture]
-    public class Spec
+    public partial class Spec
     {
         [Test, TestCaseSource("TestCases")]
         public async Task Verify(Func<Task> test)
@@ -309,14 +309,20 @@ namespace SpecEasy
         }
 
         private bool hasCalledBefore;
+
         private void BeforeIfNotAlreadyRun()
         {
-            if (!hasCalledBefore)
+            if (hasCalledBefore)
             {
-                BeforeEachInit();
-                BeforeEachExample();
-                hasCalledBefore = true;
+                return;
             }
+
+            InitializeMockingContainer();
+
+            BeforeEachInit();
+            BeforeEachExample();
+
+            hasCalledBefore = true;
         }
 
         private void After()

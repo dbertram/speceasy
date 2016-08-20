@@ -97,6 +97,7 @@
     <Compile Include="Action.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DuplicateDescriptionException.cs" />
+    <Compile Include="Spec.MockingContainer.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="VerifyContext.cs" />
     <Compile Include="Spec.cs" />
