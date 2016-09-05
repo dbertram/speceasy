@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
+using SpecEasy.Internal;
 
 namespace SpecEasy
 {
