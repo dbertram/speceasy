@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace SpecEasy
 {
@@ -124,6 +126,12 @@ namespace SpecEasy
             return new VerifyContext(Then);
         }
 
+        protected void Raise<T>(Action<T> eventSubscription, params object[] args) where T : class
+        {
+            var mock = Get<T>();
+            mock.Raise(eventSubscription, args);
+        }
+
         protected void AssertWasThrown<T>() where T : Exception
         {
             AssertWasThrown<T>(null);
@@ -155,6 +163,30 @@ namespace SpecEasy
             }
 
             thrownException = null;
+        }
+
+        protected void AssertWasCalled<T>(Action<T> action)
+        {
+            var mock = Get<T>();
+            mock.AssertWasCalled(action);
+        }
+
+        protected void AssertWasCalled<T>(Action<T> action, Action<IMethodOptions<object>> methodOptions)
+        {
+            var mock = Get<T>();
+            mock.AssertWasCalled(action, methodOptions);
+        }
+
+        protected void AssertWasNotCalled<T>(Action<T> action)
+        {
+            var mock = Get<T>();
+            mock.AssertWasNotCalled(action);
+        }
+
+        protected void AssertWasNotCalled<T>(Action<T> action, Action<IMethodOptions<object>> methodOptions)
+        {
+            var mock = Get<T>();
+            mock.AssertWasNotCalled(action, methodOptions);
         }
 
         private static Func<Task> ThrowDuplicateDescriptionException(string typeOfDuplicate, string description)

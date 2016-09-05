@@ -1,6 +1,5 @@
 ﻿using System;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 using TinyIoC;
 
 namespace SpecEasy
@@ -23,11 +22,6 @@ namespace SpecEasy
 
         internal TinyIoCContainer MockingContainer;
 
-        protected T Mock<T>() where T : class
-        {
-            return MockRepository.GenerateMock<T>();
-        }
-
         protected T Get<T>()
         {
             RequireMockingContainer();
@@ -41,34 +35,9 @@ namespace SpecEasy
             MockingContainer.Register(typeof(T), item);
         }
 
-        protected void Raise<T>(Action<T> eventSubscription, params object[] args) where T : class
+        protected T Mock<T>() where T : class
         {
-            var mock = Get<T>();
-            mock.Raise(eventSubscription, args);
-        }
-
-        protected void AssertWasCalled<T>(Action<T> action)
-        {
-            var mock = Get<T>();
-            mock.AssertWasCalled(action);
-        }
-
-        protected void AssertWasCalled<T>(Action<T> action, Action<IMethodOptions<object>> methodOptions)
-        {
-            var mock = Get<T>();
-            mock.AssertWasCalled(action, methodOptions);
-        }
-
-        protected void AssertWasNotCalled<T>(Action<T> action)
-        {
-            var mock = Get<T>();
-            mock.AssertWasNotCalled(action);
-        }
-
-        protected void AssertWasNotCalled<T>(Action<T> action, Action<IMethodOptions<object>> methodOptions)
-        {
-            var mock = Get<T>();
-            mock.AssertWasNotCalled(action, methodOptions);
+            return MockRepository.GenerateMock<T>();
         }
 
         private void InitializeMockingContainer()
