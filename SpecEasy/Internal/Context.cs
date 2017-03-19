@@ -34,7 +34,9 @@ namespace SpecEasy.Internal
             }
         }
 
+#pragma warning disable 1998
         private readonly Func<Task> setupAction = async delegate { };
+#pragma warning restore 1998
         private readonly string conjunction;
         private Action enterAction = delegate { };
 

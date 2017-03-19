@@ -91,7 +91,9 @@ namespace SpecEasy
 
         protected virtual IContext ForWhen(string description, Action action)
         {
+#pragma warning disable 1998
             var context = new Context(async () => { }, () => When(description, action));
+#pragma warning restore 1998
             contexts.Add(context);
             return context;
         }
@@ -172,7 +174,9 @@ namespace SpecEasy
 
         private static Func<Task> WrapAction(Action action)
         {
+#pragma warning disable 1998
             return async () => action();
+#pragma warning restore 1998
         }
     }
 }

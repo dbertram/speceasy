@@ -1,4 +1,5 @@
-﻿namespace SpecEasy.Specs.SpecNames.SupportingExamples
+﻿#pragma warning disable 1998
+namespace SpecEasy.Specs.SpecNames.SupportingExamples
 {
     [SupportingExample]
     internal class SpecNamingSpec : Spec
