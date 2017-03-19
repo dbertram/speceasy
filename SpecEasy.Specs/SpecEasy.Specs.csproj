@@ -144,6 +144,7 @@
     <Compile Include="SupportingExampleAttribute.cs" />
     <Compile Include="TestResultExtensions.cs" />
     <Compile Include="SpecNames\SpecNamingTests.cs" />
+    <Compile Include="TinyIoC\DisposableSubscriber.cs" />
     <Compile Include="TinyIoC\PublicAndInternalCtors.cs" />
     <Compile Include="TinyIoC\PublicAndPrivateCtors.cs" />
     <Compile Include="TinyIoC\SinglePrivateCtor.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="TinyIoC\TinyIoCPublicAndPrivateCtorsSpec.cs" />
     <Compile Include="TinyIoC\TinyIoCSinglePrivateCtorSpec.cs" />
     <Compile Include="TinyIoC\TinyIoCSinglePublicCtorSpec.cs" />
+    <Compile Include="TinyIoC\TinyIoCSUTDisposal.cs" />
     <Compile Include="TinyIoC\TinyIoCTwoPublicCtorsSpec.cs" />
     <Compile Include="TinyIoC\TwoPublicCtors.cs" />
   </ItemGroup>
